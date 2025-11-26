@@ -1,0 +1,16 @@
+# Bỏ qua thư mục chứa dependencies
+node_modules/
+
+# Bỏ qua các thư mục và file build/cache
+build/
+dist/
+.cache/
+
+# Bỏ qua các file logs và tạm thời
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Bỏ qua các file cấu hình môi trường cục bộ
+.env.local
+.env.*.local
