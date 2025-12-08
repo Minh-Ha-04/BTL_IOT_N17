@@ -13,8 +13,9 @@ const MQTT_BROKER = 'mqtt://broker.hivemq.com';
 const DATA_TOPIC = 'fire-alarm/data'; 
 const CONTROL_TOPIC = 'fire-alarm/control'; 
 
-// Middleware
+const authRoutes = require ('./routes/auth.js');
 app.use(bodyParser.json());
+app.use('/api/auth', authRoutes);
 const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: "*", methods: ["GET", "POST"] } });
 
@@ -39,7 +40,7 @@ mqttClient.on('message', async (topic, message) => {
             const newData = new SensorData({
                 temperature: data.temperature,
                 mq2Value: data.mq2Value,
-                flameDetected: data.flameDetected,
+                flameValue: data.flameValue,
                 alarm: data.alarm,
                 alarmEnabled: data.alarmEnabled,  // <-- chỉ còn alarmEnabled
                 timestamp: Date.now()
@@ -47,12 +48,6 @@ mqttClient.on('message', async (topic, message) => {
             await newData.save();
 
             io.emit('sensorUpdate', newData);
-            console.log('📡 Data received and emitted:', {
-                temp: newData.temperature, 
-                mq2: newData.mq2Value,
-                alarm: newData.alarm,
-                alarmEnabled: newData.alarmEnabled
-            });
 
         } catch (error) {
             console.error('❌ Error processing MQTT data or saving to DB:', error.message);
@@ -82,4 +77,7 @@ app.get('/api/history', async (req, res) => {
     }
 });
 
-server.listen(PORT, () => console.log(`🌍 Server running on http://localhost:${PORT}`));
+server.listen(PORT, "0.0.0.0", () => {
+    console.log(`🌍 Server running on http://0.0.0.0:${PORT}`);
+  });
+  
