@@ -13,7 +13,6 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import styles from '../styles/userStyles';
 import Slider from '@react-native-community/slider';
 import { LineChart } from 'react-native-chart-kit';
 import axios from 'axios';
@@ -94,7 +93,7 @@ function bearingToDirection(bearing) {
 }
 
 export default function UserScreen({ setIsLogin, setRole }) {
-  const [activeTab, setActiveTab] = useState('system');
+  const [activeTab, setActiveTab] = useState('system'); // 'system', 'stats', 'logout'
   const [data, setData] = useState({
     temperature: 0,
     mq2Value: 0,
@@ -996,3 +995,566 @@ const triggerDistanceAlertIfNeeded = async (source = 'alarm') => {
   );
 }
 
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F5F7FA',
+  },
+  content: {
+    flex: 1,
+  },
+  tabContent: {
+    paddingBottom: 20,
+  },
+
+  // Header
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    paddingTop: 40,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  headerIcon: {
+    fontSize: 28,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+    letterSpacing: 0.5,
+  },
+  headerSubtitle: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 2,
+  },
+
+  // Status Card
+  statusCard: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 24,
+    padding: 28,
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  statusIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  statusIcon: {
+    fontSize: 48,
+  },
+  statusText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+  warningBadge: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  warningText: {
+    fontSize: 13,
+    color: 'white',
+    fontWeight: '600',
+  },
+
+  // Banner khoảng cách
+  distanceBanner: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: '#FFF4E5',
+    borderWidth: 1,
+    borderColor: '#FFD8A8',
+  },
+  distanceBannerTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#D9480F',
+    marginBottom: 4,
+  },
+  distanceBannerText: {
+    fontSize: 14,
+    color: '#7F4F24',
+    marginBottom: 4,
+  },
+  distanceBannerSub: {
+    fontSize: 13,
+    color: '#8C6E54',
+  },
+
+  // Sensor Grid
+  sensorGrid: {
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+    gap: 12,
+  },
+  sensorCard: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  sensorIconBg: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sensorCardIcon: {
+    fontSize: 24,
+  },
+  sensorInfo: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 4,
+  },
+  sensorValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+  },
+  sensorUnit: {
+    fontSize: 12,
+    color: '#666',
+    marginLeft: 2,
+    fontWeight: '600',
+  },
+  sensorLabel: {
+    fontSize: 11,
+    color: '#8E8E93',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  sensorThreshold: {
+    fontSize: 9,
+    color: '#C7C7CC',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  sensorBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: 3,
+    borderRadius: 2,
+  },
+
+  // Card
+  card: {
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  cardIconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#F8F9FA',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  cardIcon: {
+    fontSize: 22,
+  },
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    flex: 1,
+  },
+
+  // Slider
+  sliderContainer: {
+    marginBottom: 20,
+  },
+  sliderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sliderLabel: {
+    fontSize: 15,
+    color: '#1A1A1A',
+    fontWeight: '600',
+  },
+  sliderValueBadge: {
+    backgroundColor: '#F8F9FA',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8EAED',
+  },
+  sliderValueText: {
+    fontSize: 14,
+    color: '#1A1A1A',
+    fontWeight: '700',
+  },
+  slider: {
+    width: '100%',
+    height: 40,
+  },
+  sliderRange: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  rangeText: {
+    fontSize: 11,
+    color: '#999',
+    fontWeight: '500',
+  },
+
+  // Control Button
+  controlButton: {
+    borderRadius: 16,
+    padding: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  buttonDanger: {
+    backgroundColor: '#FF3B30',
+  },
+  buttonSuccess: {
+    backgroundColor: '#34C759',
+  },
+  controlButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  controlIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  controlIcon: {
+    fontSize: 24,
+  },
+  controlTextContainer: {
+    flex: 1,
+  },
+  controlButtonText: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: 'white',
+    marginBottom: 4,
+  },
+  controlButtonSubtext: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.85)',
+  },
+
+  // Charts
+  chartCard: {
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  chartTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 16,
+    marginTop: 20,
+  },
+
+  // Logout Tab
+  logoutContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#F5F7FA',
+  },
+  logoutCard: {
+    backgroundColor: 'white',
+    borderRadius: 24,
+    padding: 32,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  logoutIconContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#FFF3E0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  logoutIcon: {
+    fontSize: 48,
+  },
+  logoutTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 12,
+  },
+  logoutDescription: {
+    fontSize: 15,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+  },
+  logoutButton: {
+    backgroundColor: '#FF3B30',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    width: '100%',
+    marginBottom: 12,
+    shadowColor: '#FF3B30',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  logoutButtonText: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: 'white',
+    textAlign: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    width: '100%',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+    textAlign: 'center',
+  },
+  logoutFooter: {
+    marginTop: 32,
+    alignItems: 'center',
+  },
+  logoutFooterText: {
+    fontSize: 14,
+    color: '#888',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  logoutFooterSubtext: {
+    fontSize: 12,
+    color: '#AAA',
+  },
+
+  // Bottom Navigation
+  bottomNav: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E8EAED',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  navItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+  },
+  navItemActive: {
+    backgroundColor: '#F0F2F5',
+  },
+  navIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+    opacity: 0.6,
+  },
+  navIconActive: {
+    opacity: 1,
+  },
+  navLabel: {
+    fontSize: 11,
+    color: '#8E8E93',
+    fontWeight: '600',
+  },
+  navLabelActive: {
+    color: '#1A1A1A',
+    fontWeight: '700',
+  },
+
+  // Alert Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  alertModal: {
+    borderRadius: 24,
+    padding: 32,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 380,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  alertIconContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  alertIcon: {
+    fontSize: 56,
+  },
+  alertTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 12,
+    letterSpacing: 0.5,
+  },
+  alertDetail: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.95)',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  alertInfo: {
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    borderRadius: 16,
+    padding: 16,
+    width: '100%',
+    marginBottom: 24,
+  },
+  alertInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  alertInfoLabel: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    fontWeight: '600',
+  },
+  alertInfoValue: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: '700',
+    textAlign: 'right',
+  },
+  alertButton: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 48,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.4)',
+  },
+  alertButtonText: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: 'white',
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+});

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LoginScreen from "./screens/LoginScreen";
 import AdminScreen from "./screens/AdminScreen";
-import UserScreen from "./screens/UserScreen";
+import UserScreen from "./screens/User/UserScreen";
 
 export default function App() {
   const [isLogin, setIsLogin] = useState(false);
